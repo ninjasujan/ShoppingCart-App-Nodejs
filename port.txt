@@ -1,0 +1,4 @@
+
+netstat -ano|findstr "PID :4000"
+
+taskkill /pid 18264 /f
