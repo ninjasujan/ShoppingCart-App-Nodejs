@@ -32,13 +32,13 @@
                                         <input type="hidden" value="<%= product._id %>" name="productId">
                                         <button class="btn" type="submit">Delete</button>
                                     </form>
+
                                 </div>
                             </article>
                             <% } %>
                     </div>
-                <% } else { %>
-                    <h1>No Products Found!</h1>
-                <% } %>
+                    <% } else { %>
+                        <h1>No Products Found!</h1>
+                        <% } %>
             </main>
-
-<%- include('../includes/end.ejs') %>
+            <%- include('../includes/end.ejs') %>
