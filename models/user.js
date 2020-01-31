@@ -19,7 +19,7 @@ const UserSchema = new Schema({
   }
 })
 
-UserSchema.methods.addToCart = function() {
+UserSchema.methods.addToCart = function(product) {
   const cartProductIndex = this.cart.items.findIndex(cp => {
     console.log('cart item', cp.productId, product._id);
     return product._id.toString() === cp.productId.toString();
@@ -32,7 +32,7 @@ UserSchema.methods.addToCart = function() {
     updatedCartItems[cartProductIndex].quantity = newQty;
   } else {
     updatedCartItems.push(
-      { productId: new objectId(product._id), 
+      { productId: product._id,
         quantity: newQty        
       }
     );
