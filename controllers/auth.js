@@ -1,12 +1,12 @@
 const bcrypt = require('bcryptjs');
-
+const crypto = require('crypto');
 const User = require('../models/user');
 const nodeMailer = require('nodemailer');
 const sendGridTransport = require('nodemailer-sendgrid-transport');
 
 const transporter = nodeMailer.createTransport(sendGridTransport({
   auth: {
-    api_key: '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'
+    api_key: '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'
   }
 }));
 
@@ -115,4 +115,51 @@ exports.postLogout = (req, res, next) => {
     console.log(err);
     res.redirect('/');
   });
+};
+
+
+exports.getReset = (req, res, next) => {
+  let message = req.flash('error');
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
+  res.render('auth/reset', {
+    path: '/reset',
+    pageTitle: 'Reset Password',
+    errorMessage: message
+  });
+}
+
+exports.postReset = (req, res, next) => {
+  crypto.randomBytes(32, (err, buffer) => {
+    if(err){
+      res.redirect('/reset');
+    }
+    const token = buffer.toString('hex');
+    User.findOne({email: req.body.email})
+      .then(user => {
+        if(!user) {
+          req.flash('error', 'No account exist with given emial');
+          return res.redirect('/reset');
+        }
+        user.resetToken = token,
+        user.resetTokenExpiration = Date.now() + 360000;
+        return user.save();
+      })
+      .then(result => {
+        res.redirect('/');
+        transporter.sendMail({
+          to: email,
+          from: 'shop@mailer.com',
+          subject: 'Password reset',
+          html: `
+            <p>You requested password reset</p>
+            <p>Click the <a href="/http://localhost:3000/reset/${token}">link</a> to reset password </p>
+          `
+        });
+      })
+      .catch(err => console.log(err));
+    });
 };
