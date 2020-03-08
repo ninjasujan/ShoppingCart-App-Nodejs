@@ -94,6 +94,7 @@ exports.postSignup = (req, res, next) => {
         })
         .then(result => {
           res.redirect('/login');
+          console.log('Email is about to send...')
           return transporter.sendMail({
             to: email,
             from: 'shop@mailer.com',
@@ -151,8 +152,8 @@ exports.postReset = (req, res, next) => {
       .then(result => {
         res.redirect('/');
         transporter.sendMail({
-          to: email,
-          from: 'shop@mailer.com',
+          to: req.body.email,
+          from: 'nodeapp.com',
           subject: 'Password reset',
           html: `
             <p>You requested password reset</p>
